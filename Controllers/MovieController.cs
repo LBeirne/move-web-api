@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using movie-web-api.Models;
+using movie_web_api.Models;
 
 namespace movie_web_api.Controllers
 {
@@ -27,9 +27,14 @@ namespace movie_web_api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Movie> GetMovies()
+        public IActionResult GetMovies()
         {
-            return movies;
+            if(movies != null) {
+                return Ok(movies);
+            }
+            else {
+                return BadRequest();
+            }
         }
     }
 }
