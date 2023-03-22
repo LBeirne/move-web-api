@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using movie-web-api.Models;
 
 namespace movie_web_api.Controllers
 {
@@ -11,9 +12,11 @@ namespace movie_web_api.Controllers
     [Route("[controller]")]
     public class MovieController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        private static readonly List<Movie> movies = new List<Movie>(10)
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            new Movie {Name = "Mandela Catalogue", Genre = "Horror", Year = 2020},
+            new Movie {Name = "Random Nonsense", Genre = "Drama", Year = 2023},
+            new Movie {Name = "The Light Knight", Genre = "Action", Year = 2018}
         };
 
         private readonly ILogger<MovieController> _logger;
@@ -24,16 +27,9 @@ namespace movie_web_api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Movie> Get()
+        public IEnumerable<Movie> GetMovies()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new Movie
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return movies;
         }
     }
 }
