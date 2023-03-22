@@ -36,5 +36,16 @@ namespace movie_web_api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("{name}")]
+        public IActionResult GetMovieByName(string name)
+        {
+            foreach(Movie m in movies) {
+                if(m.Name.Equals(name)) {
+                    return Ok(m);
+                }
+            }
+            return BadRequest();
+        }
     }
 }
