@@ -37,7 +37,7 @@ namespace movie_web_api.Controllers
             }
         }
 
-        [HttpGet("{name}")]
+        [HttpGet("{name}", Name = "GetMovie")]
         public IActionResult GetMovieByName(string name)
         {
             foreach(Movie m in movies) {
@@ -47,5 +47,65 @@ namespace movie_web_api.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("year/")]
+        public IActionResult GetMoviesByYear(int year)
+        {
+            foreach(Movie m in movies) {
+                if(m.Year == year) {
+                    return Ok(m);
+                }
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public IActionResult CreateMove(Movie m)
+        {
+            try {
+                movies.Add(m);
+                return CreatedAtRoute("GetMovie", new {name=m.Name}, m);
+            }
+            catch(Exception e) {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("{name}")]
+        public IActionResult UpdateMove(Movie movieIn, string name)
+        {
+            try {
+                foreach(Movie m in movies) {
+                    if(m.Name.Equals(name)) {
+                        m.Name = movieIn.Name;
+                        m.Genre = movieIn.Genre;
+                        m.Year = movieIn.Year;
+                        return NoContent();
+                    }
+                }
+                return BadRequest();
+            }
+            catch(Exception e) {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{name}")]
+        public IActionResult DeleteMove(string name)
+        {
+            try {
+                foreach(Movie m in movies) {
+                    if(m.Name.Equals(name)) {
+                        movies.Remove(m);
+                        return NoContent();
+                    }
+                }
+                return BadRequest();
+            }
+            catch(Exception e) {
+                return StatusCode(500);
+            }
+        }
+
     }
 }
