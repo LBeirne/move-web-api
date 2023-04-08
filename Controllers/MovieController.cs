@@ -51,7 +51,7 @@ namespace movie_web_api.Controllers
         }
 
         //endpoint 3
-        [HttpGet("year/")]
+        [HttpGet("year/{year}")]
         public IActionResult GetMoviesByYear(int year)
         {
             foreach(Movie m in movies) {
