@@ -26,6 +26,7 @@ namespace movie_web_api.Controllers
             _logger = logger;
         }
 
+        //endpoint 1
         [HttpGet]
         public IActionResult GetMovies()
         {
@@ -37,6 +38,7 @@ namespace movie_web_api.Controllers
             }
         }
 
+        //endpoint 2
         [HttpGet("{name}", Name = "GetMovie")]
         public IActionResult GetMovieByName(string name)
         {
@@ -48,6 +50,7 @@ namespace movie_web_api.Controllers
             return BadRequest();
         }
 
+        //endpoint 3
         [HttpGet("year/")]
         public IActionResult GetMoviesByYear(int year)
         {
@@ -59,6 +62,7 @@ namespace movie_web_api.Controllers
             return BadRequest();
         }
 
+        //endpoint 4
         [HttpPost]
         public IActionResult CreateMove(Movie m)
         {
@@ -71,6 +75,7 @@ namespace movie_web_api.Controllers
             }
         }
 
+        //endpoint 5
         [HttpPut("{name}")]
         public IActionResult UpdateMove(Movie movieIn, string name)
         {
@@ -90,6 +95,7 @@ namespace movie_web_api.Controllers
             }
         }
 
+        //endpoint 6
         [HttpDelete("{name}")]
         public IActionResult DeleteMove(string name)
         {
