@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using movie_web_api.Services;
+using movie_web_api.Repository;
 
 namespace movie_web_api
 {
@@ -26,6 +28,8 @@ namespace movie_web_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IMovieService, MovieService>();
+            services.AddSingleton<IMovieRepository, MovieRepository>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
