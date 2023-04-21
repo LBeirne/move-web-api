@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using movie_web_api.Models;
+using MySql.Data.MySqlClient; //dotnet add package MySql.Data
 
 
 
@@ -14,45 +16,81 @@ namespace movie_web_api.Repository {
         };
 
 
+        private MySqlConnection _connection;
+
         public MovieRepository() {
-            //repo
+            string connectionString = "server=localhost;userid=lpbeirne;password=supersecurepassword;database=entertainment";
+            _connection = new MySqlConnection(connectionString);
+            _connection.Open();
+        }
+
+        ~MovieRepository() {
+            _connection.Close();
         }
 
         public IEnumerable<Movie> GetAll() {
-            return movies;
+            var statement = "Select * from Movies";
+            var command = new MySqlCommand(statement, _connection);
+            var results = command.ExecuteReader();
+
+            List<Movie> list = new List<Movie>(20);
+
+            while(results.Read()) {
+                Movie m = new Movie {
+                    Name = (string)results[1],
+                    Year = (int)results[2],
+                    Genre = (string)results[3]
+                };
+                list.Add(m);
+            }
+            results.Close();
+            return list;
         }
 
         public Movie GetMovieByName(string name) {
-            foreach(Movie m in movies) {
-                if(m.Name.Equals(name)) {
-                    return m;
-                }
+            var statement = "Select * from Movies where Name = @targetName";
+            var command = new MySqlCommand(statement, _connection);
+            command.Parameters.AddWithValue("@targetName", name);
+            var results = command.ExecuteReader();
+
+            Movie m = null;
+            if(results.Read()) {
+                m = new Movie {
+                    Name = (string)results[1],
+                    Year = (int)results[2],
+                    Genre = (string)results[3]
+                };
             }
-            return null;
+            results.Close();
+            return m;
         }
 
         public void InsertMovie(Movie m) {
-            movies.Add(m);
+            var statement = "Insert into Movies (Name, Year, Genre) Values(@n, @y, @g)";
+            var command = new MySqlCommand(statement, _connection);
+            command.Parameters.AddWithValue("@n", m.Name);
+            command.Parameters.AddWithValue("@y", m.Year);
+            command.Parameters.AddWithValue("@g", m.Genre);
+            var results = command.ExecuteNonQuery();
+
+            Console.WriteLine(results);
         }
 
         public void UpdateMovie(string name, Movie movieIn) {
-            foreach(Movie m in movies) {
-                if(m.Name.Equals(name)) {
-                    m.Name = movieIn.Name;
-                    m.Genre = movieIn.Genre;
-                    m.Year = movieIn.Year;
-                    return;
-                }
-            }
+            var statement = "Update Movies Set Name=@newName, Year=@newYear, Genre=@newGenre Where Name=@updateName";
+            var command = new MySqlCommand(statement, _connection);
+            command.Parameters.AddWithValue("@newName", movieIn.Name);
+            command.Parameters.AddWithValue("@newYear", movieIn.Year);
+            command.Parameters.AddWithValue("@newGenre", movieIn.Genre);
+            command.Parameters.AddWithValue("@updateName", name);
+            var results = command.ExecuteNonQuery();
         }
 
         public void DeleteMovie(string name) {
-            foreach(Movie m in movies) {
-                if(m.Name.Equals(name)) {
-                    movies.Remove(m);
-                    return;
-                }
-            }
+            var statement = "Delete from Movies where Name = @targetName";
+            var command = new MySqlCommand(statement, _connection);
+            command.Parameters.AddWithValue("@targetName", name);
+            var results = command.ExecuteNonQuery();
         }
 
     }
